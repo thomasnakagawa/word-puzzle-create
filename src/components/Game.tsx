@@ -91,7 +91,7 @@ export default function Game(props: IProps): JSX.Element {
           <h3>Share your results:</h3>
           <p>{puzzleTitle} {guesses.length}/{guessesAllowed}</p>
           { guesses.map((guess, guessIndex) => (
-            <>
+            <div key={guessIndex}>
               <span key={`guess-row-${guessIndex}`}>
                 { guess.map((guessCell, guessCellIndex) => (
                   <span key={`guess-cell-${guessIndex}-${guessCellIndex}`}>
@@ -99,8 +99,7 @@ export default function Game(props: IProps): JSX.Element {
                   </span>
                 ))}
               </span>
-              <br/>
-            </>
+            </div>
           ))}
           <p>{window.location.toString()}</p>
           <br/>
