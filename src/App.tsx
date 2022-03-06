@@ -1,20 +1,21 @@
 import React from 'react';
 import { HashRouter, Route,  Routes } from 'react-router-dom';
-import Homepage from './components/Homepage';
-import CreatePage from './components/CreatePage';
-import './App.css';
-import PlayPage from './components/PlayPage';
-import ErrorMessage from './components/ErrorMessage';
-import AboutPage from './components/AboutPage';
+import CreatePage from './components/pages/CreatePage';
+import ErrorMessage from './components/uiElements/ErrorMessage';
+import AboutPage from './components/pages/AboutPage';
+import Homepage from './components/pages/Homepage';
+import SharePage from './components/pages/SharePage';
+import PlayPage from './components/pages/PlayPage';
 
 export default function App(): JSX.Element {
   return (
     <div className="App">
       <HashRouter>
-        <Routes>
+        <Routes>s
           <Route index element={<Homepage/>}/>
           <Route path='/create'>
             <Route index element={<CreatePage/>}/>
+            <Route path=':id' element={<SharePage/>}/>
           </Route>
           <Route path='/puzzle/:id' element={<PlayPage/>}/>
           <Route path='/about' element={<AboutPage/>}/>

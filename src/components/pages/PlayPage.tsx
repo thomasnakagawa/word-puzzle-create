@@ -1,8 +1,8 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import usePuzzle from '../hooks/usePuzzle';
-import ErrorMessage from './ErrorMessage';
-import { Game } from './Game';
+import usePuzzle from '../../hooks/usePuzzle';
+import ErrorMessage from '../uiElements/ErrorMessage';
+import Game from '../Game';
 
 export default function PlayPage(): JSX.Element {
   const { id } = useParams();
@@ -20,11 +20,5 @@ export default function PlayPage(): JSX.Element {
     );
   }
 
-  return (
-    <>
-      <h1>{(puzzle.title && puzzle.title.length > 0) ? puzzle.title : 'Word puzzle'}</h1>
-      <h2>Guess the word!</h2>
-      <Game puzzle={puzzle}/>
-    </>
-  );
+  return <Game puzzle={puzzle}/>;
 }

@@ -1,16 +1,18 @@
 import React, { useCallback, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
-import { isWord } from '../services/DictionaryService';
-import { writePuzzle } from '../services/FirebaseService';
-import { ValidationMessage } from './ValidationMessage';
+import { Link, NavigateFunction, useNavigate } from 'react-router-dom';
+import { strings } from '../../constants/strings';
+import { values } from '../../constants/values';
+import { isWord } from '../../services/DictionaryService';
+import { writePuzzle } from '../../services/FirebaseService';
+import ValidationMessage from '../uiElements/ValidationMessage';
 
 export default function CreatePage(): JSX.Element {
   const { register, handleSubmit } = useForm();
+  const navigate: NavigateFunction = useNavigate();
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [validationMessage, setValidationMessage] = useState<string | undefined>(undefined);
-
-  const [puzzleId, setPuzzleId] = useState<string | undefined>(undefined);
 
   const onSubmit: SubmitHandler<Record<string, any>> = useCallback((data) => {
     setIsLoading(true);
@@ -28,8 +30,7 @@ export default function CreatePage(): JSX.Element {
         });
       })
       .then((puzzleId) => {
-        console.log(puzzleId);
-        setPuzzleId(puzzleId);
+        navigate(`/create/${puzzleId}`);
       })
       .catch((e: Error) => {
         setValidationMessage(e.message);
@@ -37,21 +38,9 @@ export default function CreatePage(): JSX.Element {
       .finally(() => {
         setIsLoading(false);
       })
-    console.log(data);
-  }, []);
+  }, [navigate]);
 
   const onInvalid = console.error;
-
-  if (puzzleId) {
-    const url: string = `${window.location.origin}${window.location.pathname}#/puzzle/${puzzleId}`;
-    return (
-      <>
-        <p>Use this link to share your word puzzle:</p>
-        <p>{url}</p>
-        <Link to={`/puzzle/${puzzleId}`}>Click here to go to your puzzle</Link>
-      </>
-    );
-  }
 
   return (
     <>
@@ -60,7 +49,7 @@ export default function CreatePage(): JSX.Element {
       <form onSubmit={handleSubmit(onSubmit, onInvalid)}>
         <label>
           Puzzle name
-          <input autoComplete='off' defaultValue='A word puzzle just for you' style={{width: '250px' }} {...register('title', { required: false, minLength: 1, maxLength: 100 })}/>
+          <input autoComplete='off' defaultValue={strings.DEFAULT_PUZZLE_NAME} style={{width: '250px' }} {...register('title', { required: false, minLength: 1, maxLength: 100 })}/>
         </label>
         <br/>
         <label>
@@ -70,7 +59,7 @@ export default function CreatePage(): JSX.Element {
         <br/>
         <label>   
           Number of guesses
-          <input type='number' defaultValue={6} min={1} max={100} {...register('numberOfGuesses', { required: true, min: 1, max: 100 })}/>
+          <input type='number' defaultValue={values.DEFAULT_NUMBER_OF_GUESSES_ALLOWED} min={1} max={100} {...register('numberOfGuesses', { required: true, min: 1, max: 100 })}/>
         </label>
         <br/>
         <input disabled={isLoading} type='submit' value='create'/>

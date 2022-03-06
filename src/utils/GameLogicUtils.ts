@@ -1,15 +1,4 @@
-export const enum LetterResult {
-  gray,
-  yellow,
-  green
-}
-
-export interface IGuessCell {
-  letter: string;
-  result: LetterResult;
-};
-
-export type Guess = IGuessCell[];
+import { Guess, LetterResult } from "../data/Guess";
 
 export function processGuess(guessString: string, solution: string): Guess {
   const processedGuess: Guess = guessString.split('').map(guessLetter => ({ letter: guessLetter, result: LetterResult.gray }));

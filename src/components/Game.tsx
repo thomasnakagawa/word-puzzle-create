@@ -1,18 +1,23 @@
 import React, { useCallback, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
+import { strings } from '../constants/strings';
+import { values } from '../constants/values';
+import { Guess, LetterResult } from '../data/Guess';
 import { IPuzzle } from "../data/IPuzzle";
 import { useTitle } from '../hooks/useTitle';
 import { isWord } from '../services/DictionaryService';
-import { Guess, LetterResult, processGuess } from '../utils/GameLogicUtils';
-import { ValidationMessage } from './ValidationMessage';
+import { processGuess } from '../utils/GameLogicUtils';
+import ValidationMessage from './uiElements/ValidationMessage';
 
 interface IProps {
   puzzle: IPuzzle;
 }
 
-export function Game(props: IProps): JSX.Element {
-  useTitle(props.puzzle.title);
+export default function Game(props: IProps): JSX.Element {
+  const puzzleTitle: string = (props.puzzle.title && props.puzzle.title.length > 0) ? props.puzzle.title : strings.DEFAULT_PUZZLE_TITLE;
+  useTitle(puzzleTitle);
+
   const { register, handleSubmit, reset, setFocus } = useForm();
 
   const [isWaiting, setIsWaiting] = useState<boolean>(false);
@@ -22,7 +27,7 @@ export function Game(props: IProps): JSX.Element {
 
   const solutionWord: string = props.puzzle.wordToGuess.toLowerCase();
   const wordLength: number = solutionWord.length;
-  const guessesAllowed: number = parseNumber(props.puzzle.numberOfGuesses) ?? 6;
+  const guessesAllowed: number = parseNumber(props.puzzle.numberOfGuesses) ?? values.DEFAULT_NUMBER_OF_GUESSES_ALLOWED;
   const guessesLeft: number = guessesAllowed - guesses.length;
 
   const didWin: boolean = guesses.some(guess => guess.every(guessCell => guessCell.result === LetterResult.green));
@@ -54,6 +59,8 @@ export function Game(props: IProps): JSX.Element {
 
   return (
     <>
+      <h1>{puzzleTitle}</h1>
+      <h2>Guess the word!</h2>
       <div style={{ fontSize: '1.2em' }}>
         { Array(guessesAllowed).fill(1).map((_, rowIndex) => (
           <GuessRow
@@ -80,7 +87,7 @@ export function Game(props: IProps): JSX.Element {
           <br/>
           <h2>{didWin ? 'Congrats! You guessed the word' : `Out of guesses! The word is "${solutionWord}"`}</h2>
           <h3>Share your results:</h3>
-          <p>{props.puzzle.title} {guesses.length}/{guessesAllowed}</p>
+          <p>{puzzleTitle} {guesses.length}/{guessesAllowed}</p>
           { guesses.map((guess, guessIndex) => (
             <>
               <span key={`guess-row-${guessIndex}`}>
