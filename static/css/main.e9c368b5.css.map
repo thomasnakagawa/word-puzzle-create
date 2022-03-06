@@ -1,0 +1,1 @@
+{"version":3,"file":"static/css/main.e9c368b5.css","mappings":"AAAA,KAIE,kCAAmC,CACnC,iCAAkC,CAHlC,qBAAsB,CACtB,iBAGF","sources":["index.css"],"sourcesContent":["body {\n  /* margin: 0; */\n  font-family: monospace;\n  text-align: center;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n}\n"],"names":[],"sourceRoot":""}
