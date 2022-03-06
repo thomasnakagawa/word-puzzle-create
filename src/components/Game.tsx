@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { IPuzzle } from "../data/IPuzzle";
+import { useTitle } from '../hooks/useTitle';
 import { isWord } from '../services/DictionaryService';
 import { Guess, LetterResult, processGuess } from '../utils/GameLogicUtils';
 import { ValidationMessage } from './ValidationMessage';
@@ -11,6 +12,7 @@ interface IProps {
 }
 
 export function Game(props: IProps): JSX.Element {
+  useTitle(props.puzzle.title);
   const { register, handleSubmit, reset, setFocus } = useForm();
 
   const [isWaiting, setIsWaiting] = useState<boolean>(false);
