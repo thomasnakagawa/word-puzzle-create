@@ -21,5 +21,7 @@ jobs:
       with:
         node-version: '16.x'
         cache: 'npm'
+    - run: git config --global user.email "gh-action@a.com"
+    - run: git config --global user.name "gh-action"
     - run: npm ci
     - run: npm run deploy
