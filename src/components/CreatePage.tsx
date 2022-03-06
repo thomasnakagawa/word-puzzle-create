@@ -43,7 +43,7 @@ export default function CreatePage(): JSX.Element {
   const onInvalid = console.error;
 
   if (puzzleId) {
-    const url: string = `${new URL(window.location.toString()).origin}/puzzle/${puzzleId}`;
+    const url: string = `${new URL(window.location.toString()).origin}/#/puzzle/${puzzleId}`;
     return (
       <>
         <p>Use this link to share your word puzzle:</p>

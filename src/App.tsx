@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Link, Route,  Routes } from 'react-router-dom';
+import { BrowserRouter, HashRouter, Link, Route,  Routes } from 'react-router-dom';
 import Homepage from './components/Homepage';
 import CreatePage from './components/CreatePage';
 import './App.css';
@@ -10,7 +10,7 @@ import AboutPage from './components/AboutPage';
 export default function App(): JSX.Element {
   return (
     <div className="App">
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
           <Route index element={<Homepage/>}/>
           <Route path='/create'>
@@ -20,7 +20,7 @@ export default function App(): JSX.Element {
           <Route path='/about' element={<AboutPage/>}/>
           <Route path='*' element={<ErrorMessage message="Hmm that link didn't work..."/>}/>
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </div>
   );
 }
