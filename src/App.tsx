@@ -1,26 +1,26 @@
 import React from 'react';
-import logo from './logo.svg';
+import { BrowserRouter, Link, Route,  Routes } from 'react-router-dom';
+import Homepage from './components/Homepage';
+import CreatePage from './components/CreatePage';
 import './App.css';
+import PlayPage from './components/PlayPage';
+import ErrorMessage from './components/ErrorMessage';
+import AboutPage from './components/AboutPage';
 
-function App() {
+export default function App(): JSX.Element {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <BrowserRouter>
+        <Routes>
+          <Route index element={<Homepage/>}/>
+          <Route path='/create'>
+            <Route index element={<CreatePage/>}/>
+          </Route>
+          <Route path='/puzzle/:id' element={<PlayPage/>}/>
+          <Route path='/about' element={<AboutPage/>}/>
+          <Route path='*' element={<ErrorMessage message="Hmm that link didn't work..."/>}/>
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
-
-export default App;
