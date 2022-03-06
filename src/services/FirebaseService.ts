@@ -15,16 +15,27 @@ const app = initializeApp(firebaseConfig);
 const db: Firestore = getFirestore(app);
 
 export async function writePuzzle(puzzle: IPuzzle): Promise<string> {
-  const docRef = await addDoc(collection(db, 'puzzles'), puzzle);
+  const docRef = await addDoc(collection(db, puzzleCollection()), puzzle);
   return docRef.id;
 }
 
 export async function fetchPuzzle(puzzleId: string): Promise<IPuzzle> {
-  const puzzleReference: DocumentReference = doc(db, 'puzzles', puzzleId)
+  const puzzleReference: DocumentReference = doc(db, puzzleCollection(), puzzleId)
   const documentSnapshot: DocumentSnapshot = await getDoc(puzzleReference);
   if (documentSnapshot.exists()) {
     return documentSnapshot.data() as IPuzzle;
   } else {
     throw new Error('Could not find puzzle');
+  }
+}
+
+function puzzleCollection(): string {
+  switch(process.env.NODE_ENV) {
+    case 'test':
+      return 'puzzlesTest';
+    case 'development':
+      return 'puzzlesDev';
+    default:
+      return 'puzzles';
   }
 }
