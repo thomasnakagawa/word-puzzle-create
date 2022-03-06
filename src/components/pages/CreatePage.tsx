@@ -1,10 +1,11 @@
 import React, { useCallback, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link, NavigateFunction, useNavigate } from 'react-router-dom';
+import { VALID_WORD_PATTERN } from '../../constants/regex';
 import { strings } from '../../constants/strings';
 import { values } from '../../constants/values';
-import { isWord } from '../../services/DictionaryService';
 import { writePuzzle } from '../../services/FirebaseService';
+import { validateAndSanitizeWord } from '../../utils/WordUtils';
 import ValidationMessage from '../uiElements/ValidationMessage';
 
 export default function CreatePage(): JSX.Element {
@@ -18,14 +19,14 @@ export default function CreatePage(): JSX.Element {
     setIsLoading(true);
     setValidationMessage(undefined);
 
-    isWord(data.puzzleWord)
-      .then(isWord => {
-        if (!isWord) {
-          throw new Error(`${data.puzzleWord} is not a word`)
+    validateAndSanitizeWord(data.puzzleWord)
+      .then(word => {
+        if (!word) {
+          throw new Error(`${word} is not a word`)
         }
         return writePuzzle({
           title: data.title,
-          wordToGuess: data.puzzleWord,
+          wordToGuess: word,
           numberOfGuesses: data.numberOfGuesses
         });
       })
@@ -54,7 +55,7 @@ export default function CreatePage(): JSX.Element {
         <br/>
         <label>
           The word to guess
-          <input autoComplete='off' maxLength={12} {...register('puzzleWord', { required: true, minLength: 1, maxLength: 12, pattern: /^[a-zA-z]*$/ })}/>
+          <input autoComplete='off' maxLength={12} {...register('puzzleWord', { required: true, minLength: 1, maxLength: 12, pattern: VALID_WORD_PATTERN })}/>
         </label>
         <br/>
         <label>   

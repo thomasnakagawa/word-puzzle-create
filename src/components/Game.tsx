@@ -1,13 +1,14 @@
 import React, { useCallback, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
+import { VALID_WORD_PATTERN } from '../constants/regex';
 import { strings } from '../constants/strings';
 import { values } from '../constants/values';
 import { Guess, LetterResult } from '../data/Guess';
 import { IPuzzle } from "../data/IPuzzle";
 import { useTitle } from '../hooks/useTitle';
-import { isWord } from '../services/DictionaryService';
 import { processGuess } from '../utils/GameLogicUtils';
+import { validateAndSanitizeWord } from '../utils/WordUtils';
 import ValidationMessage from './uiElements/ValidationMessage';
 
 interface IProps {
@@ -37,10 +38,11 @@ export default function Game(props: IProps): JSX.Element {
     const guessedWord: string = data.puzzleGuess.toLowerCase();
     setIsWaiting(true);
     setValidationMessage(undefined);
-    isWord(data.puzzleGuess)
-      .then(isWord => {
-        if (isWord) {
-          const newGuess: Guess = processGuess(guessedWord, solutionWord);
+
+    validateAndSanitizeWord(guessedWord)
+      .then(word => {
+        if (word) {
+          const newGuess: Guess = processGuess(word, solutionWord);
           setGuesses([...guesses, newGuess]);
           reset();
         } else {
@@ -76,7 +78,7 @@ export default function Game(props: IProps): JSX.Element {
       <form onSubmit={handleSubmit(onSubmitGuess)}>
         <label>
           Guess the {wordLength} letter word, {guessesLeft} {guessesLeft === 1 ? 'guess' : 'guesses'} left:<br/>
-          <input disabled={isWaiting} autoComplete='off' maxLength={wordLength} {...register('puzzleGuess', { required: true, minLength: wordLength, maxLength: wordLength, pattern: /^[a-zA-z]*$/ })}></input>
+          <input disabled={isWaiting} autoComplete='off' maxLength={wordLength} {...register('puzzleGuess', { required: true, minLength: wordLength, maxLength: wordLength, pattern: VALID_WORD_PATTERN })}></input>
         </label>
         <input disabled={isWaiting || isGameOver} type='submit'/>
         <ValidationMessage message={validationMessage}/>
