@@ -18,7 +18,8 @@ export function Game(props: IProps): JSX.Element {
 
   const [guesses, setGuesses] = useState<Guess[]>([]);
 
-  const wordLength: number = props.puzzle.wordToGuess.length;
+  const solutionWord: string = props.puzzle.wordToGuess.toLowerCase();
+  const wordLength: number = solutionWord.length;
   const guessesAllowed: number = parseNumber(props.puzzle.numberOfGuesses) ?? 6;
   const guessesLeft: number = guessesAllowed - guesses.length;
 
@@ -26,16 +27,17 @@ export function Game(props: IProps): JSX.Element {
   const isGameOver: boolean = didWin || guessesLeft < 1;
 
   const onSubmitGuess: SubmitHandler<Record<string, any>> = useCallback((data) => {
+    const guessedWord: string = data.puzzleGuess.toLowerCase();
     setIsWaiting(true);
     setValidationMessage(undefined);
     isWord(data.puzzleGuess)
       .then(isWord => {
         if (isWord) {
-          const newGuess: Guess = processGuess(data.puzzleGuess, props.puzzle.wordToGuess);
+          const newGuess: Guess = processGuess(guessedWord, solutionWord);
           setGuesses([...guesses, newGuess]);
           reset();
         } else {
-          setValidationMessage(`${data.puzzleGuess} is not a word`);
+          setValidationMessage(`${guessedWord} is not a word`);
         }
       })
       .catch((e) => {
@@ -46,7 +48,7 @@ export function Game(props: IProps): JSX.Element {
         setIsWaiting(false);
         setFocus('puzzleGuess')
       })
-  }, [guesses, props.puzzle.wordToGuess, reset, setFocus]);
+  }, [guesses, solutionWord, reset, setFocus]);
 
   return (
     <>
@@ -55,7 +57,7 @@ export function Game(props: IProps): JSX.Element {
           <GuessRow
             key={rowIndex}
             guess={rowIndex < guesses.length ? guesses[rowIndex] : undefined}
-            solution={props.puzzle.wordToGuess}
+            solution={solutionWord}
             guessNumber={rowIndex + 1}
           />
         ))}
@@ -74,7 +76,7 @@ export function Game(props: IProps): JSX.Element {
         <>
           <br/>
           <br/>
-          <h2>{didWin ? 'Congrats! You guessed the word' : `Out of guesses! The word is "${props.puzzle.wordToGuess}"`}</h2>
+          <h2>{didWin ? 'Congrats! You guessed the word' : `Out of guesses! The word is "${solutionWord}"`}</h2>
           <h3>Share your results:</h3>
           <p>{props.puzzle.title} {guesses.length}/{guessesAllowed}</p>
           { guesses.map((guess, guessIndex) => (
