@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { IPuzzle } from "../data/IPuzzle";
 import { isWord } from "../services/DictionaryService";
-import { fetchPuzzle } from "../services/FirebaseService";
+import { fetchPuzzle } from "../services/PuzzleService";
 
 export default function usePuzzle(id?: string): [puzzle?: IPuzzle, error?: string] {
   const [error, setError] = useState<string | undefined>(undefined);

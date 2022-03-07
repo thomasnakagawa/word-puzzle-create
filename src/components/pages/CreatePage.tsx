@@ -4,7 +4,7 @@ import { Link, NavigateFunction, useNavigate } from 'react-router-dom';
 import { VALID_WORD_PATTERN } from '../../constants/regex';
 import { strings } from '../../constants/strings';
 import { values } from '../../constants/values';
-import { writePuzzle } from '../../services/FirebaseService';
+import { writePuzzle } from '../../services/PuzzleService';
 import { validateAndSanitizeWord } from '../../utils/WordUtils';
 import ValidationMessage from '../uiElements/ValidationMessage';
 

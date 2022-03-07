@@ -11,7 +11,7 @@ export default function App(): JSX.Element {
   return (
     <div className="App">
       <HashRouter>
-        <Routes>s
+        <Routes>
           <Route index element={<Homepage/>}/>
           <Route path='/create'>
             <Route index element={<CreatePage/>}/>
