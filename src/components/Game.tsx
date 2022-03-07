@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
 import { VALID_WORD_PATTERN } from '../constants/regex';
 import { strings } from '../constants/strings';
 import { values } from '../constants/values';
@@ -8,7 +7,9 @@ import { Guess, LetterResult } from '../data/Guess';
 import { IPuzzle } from "../data/IPuzzle";
 import { useTitle } from '../hooks/useTitle';
 import { processGuess } from '../utils/GameLogicUtils';
-import { validateAndSanitizeWord } from '../utils/WordUtils';
+import { normalizeWord, validateAndSanitizeWord } from '../utils/WordUtils';
+import GuessRow from './GuessRow';
+import Results from './Results';
 import ValidationMessage from './uiElements/ValidationMessage';
 
 interface IProps {
@@ -26,7 +27,7 @@ export default function Game(props: IProps): JSX.Element {
 
   const [guesses, setGuesses] = useState<Guess[]>([]);
 
-  const solutionWord: string = props.puzzle.wordToGuess.toLowerCase();
+  const solutionWord: string = normalizeWord(props.puzzle.wordToGuess);
   const wordLength: number = solutionWord.length;
   const guessesAllowed: number = parseNumber(props.puzzle.numberOfGuesses) ?? values.DEFAULT_NUMBER_OF_GUESSES_ALLOWED;
   const guessesLeft: number = guessesAllowed - guesses.length;
@@ -35,22 +36,20 @@ export default function Game(props: IProps): JSX.Element {
   const isGameOver: boolean = didWin || guessesLeft < 1;
 
   const onSubmitGuess: SubmitHandler<Record<string, any>> = useCallback((data) => {
-    const guessedWord: string = data.puzzleGuess.toLowerCase();
     setIsWaiting(true);
     setValidationMessage(undefined);
 
-    validateAndSanitizeWord(guessedWord)
+    validateAndSanitizeWord(data.puzzleGuess)
       .then(word => {
         if (word) {
           const newGuess: Guess = processGuess(word, solutionWord);
           setGuesses([...guesses, newGuess]);
           reset();
         } else {
-          setValidationMessage(`${guessedWord} is not a word`);
+          setValidationMessage(`${data.puzzleGuess} is not a word`);
         }
       })
       .catch((e) => {
-        console.error(e);
         setValidationMessage('there was an error');
       })
       .finally(() => {
@@ -83,28 +82,14 @@ export default function Game(props: IProps): JSX.Element {
         <input disabled={isWaiting || isGameOver} type='submit'/>
         <ValidationMessage message={validationMessage}/>
       </form>
-      { isGameOver && (
-        <>
-          <br/>
-          <br/>
-          <h2>{didWin ? 'Congrats! You guessed the word' : `Out of guesses! The word is "${solutionWord}"`}</h2>
-          <h3>Share your results:</h3>
-          <p>{puzzleTitle} {guesses.length}/{guessesAllowed}</p>
-          { guesses.map((guess, guessIndex) => (
-            <div key={guessIndex}>
-              <span key={`guess-row-${guessIndex}`}>
-                { guess.map((guessCell, guessCellIndex) => (
-                  <span key={`guess-cell-${guessIndex}-${guessCellIndex}`}>
-                    { resultEmoji(guessCell.result) }
-                  </span>
-                ))}
-              </span>
-            </div>
-          ))}
-          <p>{window.location.toString()}</p>
-          <br/>
-          <p><Link to='/'>Create your own word puzzle </Link></p>
-        </>
+      {isGameOver && (
+        <Results
+          puzzleTitle={puzzleTitle}
+          didWin={didWin}
+          solutionWord={solutionWord}
+          guesses={guesses}
+          guessesAllowed={guessesAllowed}
+        />
       )}
     </>
   );
@@ -121,57 +106,4 @@ function parseNumber(value: unknown): number | undefined {
     }
   }
   return undefined;
-}
-
-interface IGuessRowProps {
-  solution: string;
-  guess?: Guess;
-  guessNumber: number;
-}
-
-function GuessRow(props: IGuessRowProps): JSX.Element {
-  if (props.guess) {
-    return (
-      <div>
-        <span>{props.guessNumber}: </span>
-        { props.guess.map((guessCell, index) => (
-          <span key={index} style={letterStyle(guessCell.result)}>{guessCell.letter} </span>
-        ))}
-      </div>
-    );
-  } else {
-    return (
-      <div>
-        <span>{props.guessNumber}: {'_ '.repeat(props.solution.length)}</span>
-      </div>
-    )
-  }
-}
-
-function letterStyle(letterResult: LetterResult): React.CSSProperties {
-  switch(letterResult) {
-    case LetterResult.gray:
-      return {
-        backgroundColor: 'lightgray'
-      }
-    case LetterResult.yellow: 
-      return {
-        backgroundColor: 'yellow'
-      }
-    case LetterResult.green: 
-      return {
-        backgroundColor: 'lime'
-      }
-  }
-}
-
-function resultEmoji(letterResult: LetterResult): string {
-  switch(letterResult) {
-    case LetterResult.gray:
-      return '⬛';
-    case LetterResult.yellow: 
-      return '🟨';
-    case LetterResult.green: 
-      return '🟩';
-  }
 }

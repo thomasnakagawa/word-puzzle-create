@@ -16,3 +16,7 @@ export function validateAndSanitizeWord(word?: unknown): Promise<string | undefi
     }
   });
 }
+
+export function normalizeWord(word: string): string {
+  return word.trim().toLowerCase();
+}
