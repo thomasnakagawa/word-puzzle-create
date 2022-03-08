@@ -1,9 +1,9 @@
 import { IPuzzle } from "../data/IPuzzle";
 import { validateAndSanitizeWord } from "./WordUtils";
 
-export function validateAndSanitizePuzzle(puzzle: IPuzzle): Promise<IPuzzle | undefined> { 
+export function validateAndSanitizePuzzle(puzzle: IPuzzle): Promise<IPuzzle> { 
   if (!puzzle || !puzzle.wordToGuess || typeof puzzle.wordToGuess !== 'string' || puzzle.wordToGuess.length < 1) {
-    return Promise.resolve(undefined);
+    throw new Error('Please enter a valid word');
   }
   
   const puzzleCopy: IPuzzle = {...puzzle};
@@ -11,7 +11,7 @@ export function validateAndSanitizePuzzle(puzzle: IPuzzle): Promise<IPuzzle | un
 
   return validateAndSanitizeWord(puzzleCopy.wordToGuess).then(word => {
     if (!word) {
-      return undefined;
+      throw new Error(`${puzzleCopy.wordToGuess} is not a word`)
     }
     puzzleCopy.wordToGuess = word;
     return puzzleCopy;

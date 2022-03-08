@@ -5,7 +5,7 @@ import { VALID_WORD_PATTERN } from '../../constants/regex';
 import { strings } from '../../constants/strings';
 import { values } from '../../constants/values';
 import { writePuzzle } from '../../services/PuzzleService';
-import { validateAndSanitizeWord } from '../../utils/WordUtils';
+import { validateAndSanitizePuzzle } from '../../utils/PuzzleUtils';
 import ValidationMessage from '../uiElements/ValidationMessage';
 
 export default function CreatePage(): JSX.Element {
@@ -19,16 +19,13 @@ export default function CreatePage(): JSX.Element {
     setIsLoading(true);
     setValidationMessage(undefined);
 
-    validateAndSanitizeWord(data.puzzleWord)
-      .then(word => {
-        if (!word) {
-          throw new Error(`${word} is not a word`)
-        }
-        return writePuzzle({
-          title: data.title,
-          wordToGuess: word,
-          numberOfGuesses: data.numberOfGuesses
-        });
+    validateAndSanitizePuzzle({
+      title: data.title,
+      wordToGuess: data.puzzleWord,
+      numberOfGuesses: data.numberOfGuesses
+    })
+      .then(puzzle => {
+        return writePuzzle(puzzle);
       })
       .then((puzzleId) => {
         navigate(`/create/${puzzleId}`);
