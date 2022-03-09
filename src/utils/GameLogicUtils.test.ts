@@ -44,5 +44,17 @@ describe('GameLogicUtils', () => {
         { result: LetterResult.gray, letter: 'x' }
       ]);
     });
+
+    it('corretly marks yellow letter when another same letter is green', () => {
+      const result = processGuess('xaxaxx', 'abcabc');
+      expect(result).toEqual([
+        { result: LetterResult.gray, letter: 'x' },
+        { result: LetterResult.yellow, letter: 'a' },
+        { result: LetterResult.gray, letter: 'x' },
+        { result: LetterResult.green, letter: 'a' },
+        { result: LetterResult.gray, letter: 'x' },
+        { result: LetterResult.gray, letter: 'x' }
+      ]);
+    });
   });
 });

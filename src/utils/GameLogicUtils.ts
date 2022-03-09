@@ -12,8 +12,10 @@ export function processGuess(guessString: string, solution: string): Guess {
 
   // set the yellow letters
   const solutionLetterOccurances: Map<string, number> = new Map();
-  solution.split('').forEach(solutionLetter => {
-    solutionLetterOccurances.set(solutionLetter, (solutionLetterOccurances.get(solutionLetter) || 0) + 1);
+  solution.split('').forEach((solutionLetter, letterIndex) => {
+    if (processedGuess[letterIndex].result === LetterResult.gray) {
+      solutionLetterOccurances.set(solutionLetter, (solutionLetterOccurances.get(solutionLetter) || 0) + 1);
+    }
   });
   
   guessString.split('').forEach((guessLetter, letterIndex) => {
