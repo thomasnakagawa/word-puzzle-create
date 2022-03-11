@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore, Firestore } from 'firebase/firestore/lite';
+import { Functions, getFunctions, httpsCallable, connectFunctionsEmulator } from 'firebase/functions';
 
 const firebaseConfig = {
   apiKey: "AIzaSyC71-xgjVwkWyI6ldbMKdhoJ5UWvDXLEZc",
@@ -25,3 +26,8 @@ export function puzzleCollection(): string {
       return 'puzzles';
   }
 }
+
+const cloudFunctions: Functions = getFunctions(app);
+// connectFunctionsEmulator(cloudFunctions, 'localhost', 4000)
+
+httpsCallable(getFunctions(app), 'processGuess').call({ hmmm: 12346}).then(console.log).catch(console.error)
