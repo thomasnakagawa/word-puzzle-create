@@ -67,7 +67,7 @@ export default function Game(props: IProps): JSX.Element {
           <GuessRow
             key={rowIndex}
             guess={rowIndex < guesses.length ? guesses[rowIndex] : undefined}
-            solution={solutionWord}
+            solutionLength={wordLength}
             guessNumber={rowIndex + 1}
           />
         ))}

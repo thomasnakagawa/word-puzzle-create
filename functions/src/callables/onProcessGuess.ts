@@ -1,10 +1,10 @@
 import { https } from "firebase-functions/v1";
-import { LetterResult } from "../data/GuessTypes";
 import { isWord } from "../services/dictionaryService";
 import { fetchDocument } from "../services/firestoreService";
 import { processGuess } from "../utils/gameLogicUtils";
 import { ensure } from "../utils/requestUtils";
 import { normalizeWord } from "../utils/wordUtils";
+import { LetterResult } from "../data/LetterResult";
 
 export interface IRequestData {
   puzzleId?: string;

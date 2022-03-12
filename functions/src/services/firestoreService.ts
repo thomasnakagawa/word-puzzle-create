@@ -14,3 +14,13 @@ export function fetchDocument(path: string): Promise<Object> {
       return data;
     })
 }
+
+export function writeDocument(collection: string, data: object): Promise<string> {
+  return firestore().collection(collection).add(data)
+    .catch(e => {
+      throw new https.HttpsError('internal', 'error');
+    })
+    .then(result => {
+      return result.id;
+    })
+}

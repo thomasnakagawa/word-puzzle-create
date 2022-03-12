@@ -2,7 +2,7 @@ import React from 'react';
 import { Guess, LetterResult } from "../data/Guess";
 
 interface IGuessRowProps {
-  solution: string;
+  solutionLength: number;
   guess?: Guess;
   guessNumber: number;
 }
@@ -20,7 +20,7 @@ export default function GuessRow(props: IGuessRowProps): JSX.Element {
   } else {
     return (
       <div>
-        <span>{props.guessNumber}: {'_ '.repeat(props.solution.length)}</span>
+        <span>{props.guessNumber}: {'_ '.repeat(props.solutionLength)}</span>
       </div>
     )
   }

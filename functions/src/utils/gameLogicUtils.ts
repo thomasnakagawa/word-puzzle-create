@@ -1,4 +1,4 @@
-import { LetterResult } from "../data/GuessTypes";
+import { LetterResult } from "../data/LetterResult";
 
 export function processGuess(guessString: string, solution: string): LetterResult[] {
   const processedGuess: LetterResult[] = guessString.split('').map(guessLetter => (LetterResult.gray));
