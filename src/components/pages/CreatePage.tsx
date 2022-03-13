@@ -4,8 +4,7 @@ import { Link, NavigateFunction, useNavigate } from 'react-router-dom';
 import { VALID_WORD_PATTERN } from '../../constants/regex';
 import { strings } from '../../constants/strings';
 import { values } from '../../constants/values';
-import { writePuzzle } from '../../services/PuzzleService';
-import { validateAndSanitizePuzzle } from '../../utils/PuzzleUtils';
+import { writePuzzle } from '../../services/writePuzzleService';
 import ValidationMessage from '../uiElements/ValidationMessage';
 
 export default function CreatePage(): JSX.Element {
@@ -19,15 +18,15 @@ export default function CreatePage(): JSX.Element {
     setIsLoading(true);
     setValidationMessage(undefined);
 
-    validateAndSanitizePuzzle({
-      title: data.title,
-      wordToGuess: data.puzzleWord,
-      numberOfGuesses: data.numberOfGuesses
+    writePuzzle({
+      puzzle: {
+        title: data.title,
+        solutionWord: data.puzzleWord,
+        numberOfGuesses: data.numberOfGuesses
+      }
     })
-      .then(puzzle => {
-        return writePuzzle(puzzle);
-      })
-      .then((puzzleId) => {
+      .then(response => {
+        const puzzleId: string = response.puzzleId;
         navigate(`/create/${puzzleId}`);
       })
       .catch((e: Error) => {
@@ -35,7 +34,7 @@ export default function CreatePage(): JSX.Element {
       })
       .finally(() => {
         setIsLoading(false);
-      })
+      });
   }, [navigate]);
 
   const onInvalid = console.error;
