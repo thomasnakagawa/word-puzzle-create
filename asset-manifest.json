@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/word-puzzle-create/static/css/main.e9c368b5.css",
-    "main.js": "/word-puzzle-create/static/js/main.75cc895b.js",
+    "main.js": "/word-puzzle-create/static/js/main.e5aaf601.js",
     "index.html": "/word-puzzle-create/index.html",
     "main.e9c368b5.css.map": "/word-puzzle-create/static/css/main.e9c368b5.css.map",
-    "main.75cc895b.js.map": "/word-puzzle-create/static/js/main.75cc895b.js.map"
+    "main.e5aaf601.js.map": "/word-puzzle-create/static/js/main.e5aaf601.js.map"
   },
   "entrypoints": [
     "static/css/main.e9c368b5.css",
-    "static/js/main.75cc895b.js"
+    "static/js/main.e5aaf601.js"
   ]
 }
