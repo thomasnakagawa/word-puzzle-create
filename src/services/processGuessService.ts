@@ -14,5 +14,5 @@ export interface IResponseData {
 }
 
 export const processGuess: (data: IRequestData) => Promise<IResponseData> = (data) => {
-  return httpsCallable(cloudFunctions, 'processGuess').call(data).then(value => value.data) as Promise<IResponseData>;
+  return httpsCallable(cloudFunctions, 'processGuess')(data).then(value => value.data) as Promise<IResponseData>;
 }

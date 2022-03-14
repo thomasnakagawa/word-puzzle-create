@@ -27,7 +27,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy-functions": "firebase deploy --only functions"
+    "deploy-functions": "cd functions && npm run deploy"
   },
   "eslintConfig": {
     "extends": [

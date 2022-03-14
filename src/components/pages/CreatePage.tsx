@@ -21,8 +21,8 @@ export default function CreatePage(): JSX.Element {
     writePuzzle({
       puzzle: {
         title: data.title,
-        solutionWord: data.puzzleWord,
-        numberOfGuesses: data.numberOfGuesses
+        wordToGuess: data.puzzleWord,
+        numberOfGuesses: Number.parseInt(data.numberOfGuesses, 10)
       }
     })
       .then(response => {

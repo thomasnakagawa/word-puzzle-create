@@ -16,8 +16,8 @@ export interface IResponseData {
 export default function onWritePuzzle(data: IRequestData): Promise<IResponseData> {
   const puzzle: ICompletePuzzle = ensure(data, 'puzzle', 'object');
 
-  const solutionWord: string = ensure(puzzle, 'solutionWord', 'string');
-  const solutionWordValue: string = normalizeWord(solutionWord);
+  const wordToGuess: string = ensure(puzzle, 'wordToGuess', 'string');
+  const solutionWordValue: string = normalizeWord(wordToGuess);
 
   return isWord(solutionWordValue)
     .then(isWord => {
@@ -27,7 +27,7 @@ export default function onWritePuzzle(data: IRequestData): Promise<IResponseData
     })
     .then(() => {
       const documentData: ICompletePuzzle = {
-        solutionWord
+        wordToGuess: solutionWordValue
       };
 
       if (puzzle.title) {

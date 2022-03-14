@@ -4,7 +4,7 @@ export interface IBasePuzzle {
 }
 
 export interface ICompletePuzzle extends IBasePuzzle {
-  solutionWord: string;
+  wordToGuess: string;
 }
 
 export interface IObfucscatedPuzzle extends IBasePuzzle {
