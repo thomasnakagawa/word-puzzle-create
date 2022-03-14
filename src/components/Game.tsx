@@ -5,6 +5,7 @@ import { strings } from '../constants/strings';
 import { values } from '../constants/values';
 import { Guess, LetterResult } from '../data/Guess';
 import { IObfucscatedPuzzle } from '../data/PuzzleTypes';
+import useGuesses from '../hooks/useGuesses';
 import { useTitle } from '../hooks/useTitle';
 import { processGuess } from '../services/processGuessService';
 import GuessRow from './GuessRow';
@@ -25,10 +26,10 @@ export default function Game(props: IProps): JSX.Element {
   const [isWaiting, setIsWaiting] = useState<boolean>(false);
   const [validationMessage, setValidationMessage] = useState<string | undefined>(undefined);
 
-  const [guesses, setGuesses] = useState<Guess[]>([]);
+  const { guesses, addGuess } = useGuesses(props.puzzleId);
 
   const wordLength: number = props.puzzle.solutionNumberOfLetters;
-  const guessesAllowed: number = parseNumber(props.puzzle.numberOfGuesses) ?? values.DEFAULT_NUMBER_OF_GUESSES_ALLOWED;
+  const guessesAllowed: number = parseNumber(props.puzzle.numberOfGuesses) ?? values.DEFAULT_NUMBER_OF_GUESSES_ALLOWED;  
   const guessesLeft: number = guessesAllowed - guesses.length;
 
   const didWin: boolean = guesses.some(guess => guess.every(guessCell => guessCell.result === LetterResult.green));
@@ -51,7 +52,7 @@ export default function Game(props: IProps): JSX.Element {
         }
 
         const newGuess: Guess = response.results.map((letterResult, index) => ({ result: letterResult, letter: response.guessWord.charAt(index) }));
-        setGuesses([...guesses, newGuess]);
+        addGuess(newGuess);
         reset();
       })
       .catch((e) => {
@@ -61,7 +62,7 @@ export default function Game(props: IProps): JSX.Element {
         setIsWaiting(false);
         setFocus('puzzleGuess')
       })
-  }, [props.puzzleId, guesses, reset, setFocus]);
+  }, [props.puzzleId, addGuess, reset, setFocus]);
 
   return (
     <>
