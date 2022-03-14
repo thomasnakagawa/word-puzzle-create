@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore, Firestore } from 'firebase/firestore/lite';
+import { Functions, getFunctions } from 'firebase/functions';
 
 const firebaseConfig = {
   apiKey: "AIzaSyC71-xgjVwkWyI6ldbMKdhoJ5UWvDXLEZc",
@@ -25,3 +26,5 @@ export function puzzleCollection(): string {
       return 'puzzles';
   }
 }
+
+export const cloudFunctions: Functions = getFunctions(app);

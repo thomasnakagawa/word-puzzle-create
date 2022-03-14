@@ -1,29 +1,31 @@
 import { useEffect, useState } from "react";
-import { IPuzzle } from "../data/IPuzzle";
-import { fetchPuzzle } from "../services/PuzzleService";
-import { validateAndSanitizePuzzle } from "../utils/PuzzleUtils";
+import { IObfucscatedPuzzle } from "../data/PuzzleTypes";
+import { fetchPuzzlePrompt } from "../services/fetchPuzzlePromptService";
 
-export default function usePuzzle(id?: string): [puzzle?: IPuzzle, error?: string] {
+export default function usePuzzle(id?: string): [puzzle?: IObfucscatedPuzzle, error?: string] {
   const [error, setError] = useState<string | undefined>(undefined);
-  const [puzzle, setPuzzle] = useState<IPuzzle | undefined>(undefined);
+  const [puzzle, setPuzzle] = useState<IObfucscatedPuzzle | undefined>(undefined);
 
   useEffect(() => {
     if (!id) {
       setError('Invalid puzzle id, check the URL');
     } else {
-      fetchPuzzle(id)
-        .then(validateAndSanitizePuzzle)
-        .then(puzzle => {
+      fetchPuzzlePrompt({ puzzleId: id })
+        .then(data => {
+          const puzzle: IObfucscatedPuzzle = data.puzzle;
           if (puzzle) {
             setError(undefined);
             setPuzzle(puzzle);
           } else {
             setError('Puzzle is broken :( You gotta make a new puzzle');
+            setPuzzle(undefined);
           }
-        }).catch((e) => {
+        })
+        .catch(e => {
           console.error(e);
-          setError('Could not get the puzzle, check the URL');
-        });
+          setError('Error fetching');
+          setPuzzle(undefined);
+        })
     }
   }, [id]);
 

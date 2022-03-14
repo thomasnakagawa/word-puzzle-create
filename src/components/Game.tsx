@@ -4,16 +4,16 @@ import { VALID_WORD_PATTERN } from '../constants/regex';
 import { strings } from '../constants/strings';
 import { values } from '../constants/values';
 import { Guess, LetterResult } from '../data/Guess';
-import { IPuzzle } from "../data/IPuzzle";
+import { IObfucscatedPuzzle } from '../data/PuzzleTypes';
 import { useTitle } from '../hooks/useTitle';
-import { processGuess } from '../utils/GameLogicUtils';
-import { normalizeWord, validateAndSanitizeWord } from '../utils/WordUtils';
+import { processGuess } from '../services/processGuessService';
 import GuessRow from './GuessRow';
 import Results from './Results';
 import ValidationMessage from './uiElements/ValidationMessage';
 
 interface IProps {
-  puzzle: IPuzzle;
+  puzzle: IObfucscatedPuzzle;
+  puzzleId: string;
 }
 
 export default function Game(props: IProps): JSX.Element {
@@ -27,8 +27,7 @@ export default function Game(props: IProps): JSX.Element {
 
   const [guesses, setGuesses] = useState<Guess[]>([]);
 
-  const solutionWord: string = normalizeWord(props.puzzle.wordToGuess);
-  const wordLength: number = solutionWord.length;
+  const wordLength: number = props.puzzle.solutionNumberOfLetters;
   const guessesAllowed: number = parseNumber(props.puzzle.numberOfGuesses) ?? values.DEFAULT_NUMBER_OF_GUESSES_ALLOWED;
   const guessesLeft: number = guessesAllowed - guesses.length;
 
@@ -39,15 +38,21 @@ export default function Game(props: IProps): JSX.Element {
     setIsWaiting(true);
     setValidationMessage(undefined);
 
-    validateAndSanitizeWord(data.puzzleGuess)
-      .then(word => {
-        if (word) {
-          const newGuess: Guess = processGuess(word, solutionWord);
-          setGuesses([...guesses, newGuess]);
-          reset();
-        } else {
+    processGuess({ puzzleId: props.puzzleId, guess: data.puzzleGuess })
+      .then(response => {
+        if (response.isNotWord) {
           setValidationMessage(`${data.puzzleGuess} is not a word`);
+          return;
         }
+
+        if (!response.results) {
+          setValidationMessage('Invalid result');
+          return;
+        }
+
+        const newGuess: Guess = response.results.map((letterResult, index) => ({ result: letterResult, letter: response.guessWord.charAt(index) }));
+        setGuesses([...guesses, newGuess]);
+        reset();
       })
       .catch((e) => {
         setValidationMessage('there was an error');
@@ -56,7 +61,7 @@ export default function Game(props: IProps): JSX.Element {
         setIsWaiting(false);
         setFocus('puzzleGuess')
       })
-  }, [guesses, solutionWord, reset, setFocus]);
+  }, [props.puzzleId, guesses, reset, setFocus]);
 
   return (
     <>
@@ -67,7 +72,7 @@ export default function Game(props: IProps): JSX.Element {
           <GuessRow
             key={rowIndex}
             guess={rowIndex < guesses.length ? guesses[rowIndex] : undefined}
-            solution={solutionWord}
+            solutionLength={wordLength}
             guessNumber={rowIndex + 1}
           />
         ))}
@@ -86,7 +91,7 @@ export default function Game(props: IProps): JSX.Element {
         <Results
           puzzleTitle={puzzleTitle}
           didWin={didWin}
-          solutionWord={solutionWord}
+          solutionWord={'TODO: solution word?'}
           guesses={guesses}
           guessesAllowed={guessesAllowed}
         />

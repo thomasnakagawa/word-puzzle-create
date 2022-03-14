@@ -20,5 +20,5 @@ export default function PlayPage(): JSX.Element {
     );
   }
 
-  return <Game puzzle={puzzle}/>;
+  return <Game puzzle={puzzle} puzzleId={id!}/>;
 }

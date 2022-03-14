@@ -1,7 +1,7 @@
 export const enum LetterResult {
-  gray,
-  yellow,
-  green
+  gray = 'gray',
+  yellow = 'yellow',
+  green = 'green'
 }
 
 export interface IGuessCell {
