@@ -46,7 +46,7 @@ export default function CreatePage(): JSX.Element {
       <form onSubmit={handleSubmit(onSubmit, onInvalid)}>
         <label>
           Puzzle name
-          <input autoComplete='off' defaultValue={strings.DEFAULT_PUZZLE_NAME} style={{width: '250px' }} {...register('title', { required: false, minLength: 1, maxLength: 100 })}/>
+          <input autoComplete='off' defaultValue={strings.DEFAULT_PUZZLE_NAME} style={{width: '250px' }} {...register('title', { required: false, minLength: 1 })}/>
         </label>
         <br/>
         <label>
