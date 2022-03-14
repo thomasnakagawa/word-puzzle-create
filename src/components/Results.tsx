@@ -32,7 +32,7 @@ export default function Results(props: IProps): JSX.Element {
     <>
       <br/>
       <br/>
-      <h2>{props.didWin ? 'Congrats! You guessed the word' : `Out of guesses! The word is "${props.solutionWord}"`}</h2>
+      <h2>{props.didWin ? 'Congrats! You guessed the word' : `Out of guesses!`}</h2>
       <h3>Share your results:</h3>
       <p>{resultTitle}</p>
       <p style={{whiteSpace: 'pre-line'}}>{resultGrid}</p>
