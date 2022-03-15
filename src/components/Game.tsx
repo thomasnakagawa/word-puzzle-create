@@ -9,6 +9,7 @@ import useGuesses from '../hooks/useGuesses';
 import { useTitle } from '../hooks/useTitle';
 import { processGuess } from '../services/processGuessService';
 import GuessRow from './GuessRow';
+import Keyboard from './Keyboard';
 import Results from './Results';
 import ValidationMessage from './uiElements/ValidationMessage';
 
@@ -21,7 +22,7 @@ export default function Game(props: IProps): JSX.Element {
   const puzzleTitle: string = (props.puzzle.title && props.puzzle.title.length > 0) ? props.puzzle.title : strings.DEFAULT_PUZZLE_TITLE;
   useTitle(puzzleTitle);
 
-  const { register, handleSubmit, reset, setFocus } = useForm();
+  const { register, handleSubmit, reset, setFocus, setValue, getValues } = useForm();
 
   const [isWaiting, setIsWaiting] = useState<boolean>(false);
   const [validationMessage, setValidationMessage] = useState<string | undefined>(undefined);
@@ -95,6 +96,22 @@ export default function Game(props: IProps): JSX.Element {
           solutionWord={'TODO: solution word?'}
           guesses={guesses}
           guessesAllowed={guessesAllowed}
+        />
+      )}
+      {isGameOver || (
+        <Keyboard
+          guesses={guesses}
+          onKeyClicked={(key: string) => {
+            const guessValue: string = getValues('puzzleGuess') || '';
+            if (guessValue.length < wordLength) {
+              setValue('puzzleGuess', `${guessValue}${key}`, { shouldValidate: true });
+            }
+          }}
+          onBackspace={() => {
+            const guessValue: string = getValues('puzzleGuess') || '';
+            const updatedGuess: string = guessValue.substring(0, guessValue.length - 1);
+            setValue('puzzleGuess', updatedGuess, { shouldValidate: true });
+          }}
         />
       )}
     </>

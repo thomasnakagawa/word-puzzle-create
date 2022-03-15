@@ -26,7 +26,7 @@ export default function GuessRow(props: IGuessRowProps): JSX.Element {
   }
 }
 
-function letterStyle(letterResult: LetterResult): React.CSSProperties {
+export function letterStyle(letterResult?: LetterResult): React.CSSProperties {
   switch(letterResult) {
     case LetterResult.gray:
       return {
@@ -39,6 +39,11 @@ function letterStyle(letterResult: LetterResult): React.CSSProperties {
     case LetterResult.green: 
       return {
         backgroundColor: 'lime'
+      }
+    default:
+      return {
+        backgroundColor: 'dimgrey',
+        color: 'lightgrey'
       }
   }
 }
