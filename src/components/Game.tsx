@@ -52,7 +52,12 @@ export default function Game(props: IProps): JSX.Element {
           return;
         }
 
-        const newGuess: Guess = response.results.map((letterResult, index) => ({ result: letterResult, letter: response.guessWord.charAt(index) }));
+        const newGuess: Guess = response.results.map(
+          (letterResult, index) => ({
+            result: letterResult,
+            letter: response.guessWord.charAt(index)
+          })
+        );
         addGuess(newGuess);
         reset();
       })
@@ -64,6 +69,33 @@ export default function Game(props: IProps): JSX.Element {
         setFocus('puzzleGuess')
       })
   }, [props.puzzleId, addGuess, reset, setFocus]);
+
+  const onBackspace: () => void = useCallback(
+    () => {
+      const guessValue: string = getValues('puzzleGuess') || '';
+      const updatedGuess: string = guessValue.substring(0, guessValue.length - 1);
+      setValue(
+        'puzzleGuess',
+        updatedGuess,
+        { shouldValidate: true }
+      );
+    },
+    [getValues, setValue]
+  );
+
+  const onKeyClicked: (key: string) => void = useCallback(
+    (key) => {
+      const guessValue: string = getValues('puzzleGuess') || '';
+      if (guessValue.length < wordLength) {
+        setValue(
+          'puzzleGuess',
+          `${guessValue}${key}`,
+          { shouldValidate: true }
+        );
+      }
+    },
+    [getValues, setValue, wordLength]
+  );
 
   return (
     <>
@@ -84,7 +116,17 @@ export default function Game(props: IProps): JSX.Element {
       <form onSubmit={handleSubmit(onSubmitGuess)}>
         <label>
           Guess the {wordLength} letter word, {guessesLeft} {guessesLeft === 1 ? 'guess' : 'guesses'} left:<br/>
-          <input disabled={isWaiting} autoComplete='off' maxLength={wordLength} {...register('puzzleGuess', { required: true, minLength: wordLength, maxLength: wordLength, pattern: VALID_WORD_PATTERN })}></input>
+          <input
+            disabled={isWaiting}
+            autoComplete='off'
+            maxLength={wordLength} 
+            {...register('puzzleGuess', {
+              required: true,
+              minLength: wordLength,
+              maxLength: wordLength, 
+              pattern: VALID_WORD_PATTERN
+            })}
+          ></input>
         </label>
         <input disabled={isWaiting || isGameOver} type='submit'/>
         <ValidationMessage message={validationMessage}/>
@@ -101,17 +143,8 @@ export default function Game(props: IProps): JSX.Element {
       {isGameOver || (
         <Keyboard
           guesses={guesses}
-          onKeyClicked={(key: string) => {
-            const guessValue: string = getValues('puzzleGuess') || '';
-            if (guessValue.length < wordLength) {
-              setValue('puzzleGuess', `${guessValue}${key}`, { shouldValidate: true });
-            }
-          }}
-          onBackspace={() => {
-            const guessValue: string = getValues('puzzleGuess') || '';
-            const updatedGuess: string = guessValue.substring(0, guessValue.length - 1);
-            setValue('puzzleGuess', updatedGuess, { shouldValidate: true });
-          }}
+          onKeyClicked={onKeyClicked}
+          onBackspace={onBackspace}
         />
       )}
     </>
