@@ -16,7 +16,8 @@ export default function onFetchPuzzlePrompt(data: IRequestData): Promise<IRespon
     const puzzle: IObfucscatedPuzzle = {
       numberOfGuesses: ensure(responseData, 'numberOfGuesses', 'number'),
       solutionNumberOfLetters: (ensure(responseData, 'wordToGuess', 'string') as string).length,
-      title: (responseData as IObfucscatedPuzzle).title
+      title: (responseData as IObfucscatedPuzzle).title,
+      extraRules: (responseData as IObfucscatedPuzzle).extraRules
     };
 
     return {
