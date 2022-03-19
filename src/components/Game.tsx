@@ -11,6 +11,7 @@ import { processGuess } from '../services/processGuessService';
 import GuessRow from './GuessRow';
 import Keyboard from './Keyboard';
 import Results from './Results';
+import RulesList from './RulesList';
 import ValidationMessage from './uiElements/ValidationMessage';
 
 interface IProps {
@@ -100,7 +101,7 @@ export default function Game(props: IProps): JSX.Element {
   return (
     <>
       <h1>{puzzleTitle}</h1>
-      <h2>Guess the word!</h2>
+      <RulesList rules={ props.puzzle.extraRules}/>
       <div style={{ fontSize: '1.2em' }}>
         { Array(guessesAllowed).fill(1).map((_, rowIndex) => (
           <GuessRow
