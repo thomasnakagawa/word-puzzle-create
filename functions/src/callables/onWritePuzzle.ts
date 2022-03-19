@@ -18,10 +18,11 @@ export default function onWritePuzzle(data: IRequestData): Promise<IResponseData
 
   const wordToGuess: string = ensure(puzzle, 'wordToGuess', 'string');
   const solutionWordValue: string = normalizeWord(wordToGuess);
+  const nonDictionaryAllowed: boolean = !!puzzle.extraRules?.nonDictionaryAllowed;
 
   return isWord(solutionWordValue)
     .then(isWord => {
-      if (!isWord) {
+      if (!isWord && !nonDictionaryAllowed) {
         throw new https.HttpsError('invalid-argument', `${solutionWordValue} is not a word`);
       }
     })
@@ -42,6 +43,13 @@ export default function onWritePuzzle(data: IRequestData): Promise<IResponseData
           throw new https.HttpsError('invalid-argument', 'Invalid numberOfGuesses');
         }
         documentData.numberOfGuesses = puzzle.numberOfGuesses;
+      }
+
+      if (puzzle.extraRules) {
+        if (typeof puzzle.extraRules !== 'object') {
+          throw new https.HttpsError('invalid-argument', 'extraRules must be an object');
+        }
+        documentData.extraRules = puzzle.extraRules;
       }
 
       return writeDocument('puzzles', documentData)

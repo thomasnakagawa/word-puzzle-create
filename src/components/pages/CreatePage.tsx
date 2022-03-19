@@ -4,6 +4,7 @@ import { Link, NavigateFunction, useNavigate } from 'react-router-dom';
 import { VALID_WORD_PATTERN } from '../../constants/regex';
 import { strings } from '../../constants/strings';
 import { values } from '../../constants/values';
+import { IExtraRules } from '../../data/PuzzleTypes';
 import { writePuzzle } from '../../services/writePuzzleService';
 import ValidationMessage from '../uiElements/ValidationMessage';
 
@@ -18,11 +19,16 @@ export default function CreatePage(): JSX.Element {
     setIsLoading(true);
     setValidationMessage(undefined);
 
+    const extraRules: IExtraRules = {
+      nonDictionaryAllowed: data.nonDictionaryAllowed
+    }
+
     writePuzzle({
       puzzle: {
         title: data.title,
         wordToGuess: data.puzzleWord,
-        numberOfGuesses: Number.parseInt(data.numberOfGuesses, 10)
+        numberOfGuesses: Number.parseInt(data.numberOfGuesses, 10),
+        extraRules
       }
     })
       .then(response => {
@@ -58,6 +64,21 @@ export default function CreatePage(): JSX.Element {
           Number of guesses
           <input type='number' defaultValue={values.DEFAULT_NUMBER_OF_GUESSES_ALLOWED} min={1} max={100} {...register('numberOfGuesses', { required: true, min: 1, max: 100 })}/>
         </label>
+        <details
+          style={{
+            backgroundColor: 'lightSlateGray',
+            color: 'white'
+          }}
+        >
+          <summary>Extra rules</summary>
+          <label>
+            Allow non-dictionary words
+            <input
+              type='checkbox'
+              {...register('nonDictionaryAllowed')}
+            />
+          </label>
+        </details>
         <br/>
         <input disabled={isLoading} type='submit' value='create'/>
         <ValidationMessage message={validationMessage}/>
